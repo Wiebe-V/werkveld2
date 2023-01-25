@@ -41,7 +41,7 @@ export default function Home() {
       plateTemp: values.plateTemp,
       rgbStripStatus: rgbStatus ? 1 : 0,
       sensorStatus: sensorStatus ? 1 : 0,
-      // modus: values.modus,
+      modus: modus,
     }).catch(alert);
   };
 
@@ -81,6 +81,8 @@ export default function Home() {
   values.sensorStatus == 1 ? (sensorStatus = true) : (sensorStatus = false);
   console.log(sensorStatus);
 
+  modus = values.modus;
+
   //   console.log(values);
 
   const rgbClick = () => {
@@ -103,6 +105,13 @@ export default function Home() {
       Push();
     }
     console.log(rgbStatus);
+  };
+
+  const modusClick = (n) => {
+    if (rgbStatus) {
+      modus = n;
+      Push();
+    }
   };
 
   return (
@@ -186,41 +195,82 @@ export default function Home() {
           <p className=" font-bold text-3xl text-black/60 font-montserrat mx-12 mt-4">Kookplaat</p>
         </div>
         <div className="col-span-4 row-span-3 bg-white/80  rounded-3xl text-black grid  drop-shadow-md grid-cols-2 grid-rows-4 overflow-hidden  ">
+          <div className="col-span-1 row-span-2 text-center grid content-center font-montserrat text-4xl text-black font-black ">LED:</div>
           {rgbStatus ? (
-            <div className={`col-span-2 row-span-2 bg-green-300 cursor-pointer text-center grid content-center font-montserrat text-4xl text-black/80 font-black `} onClick={rgbClick}>
-              aan
+            <div className={`col-span-1 row-span-2 bg-green-300 cursor-pointer text-center grid content-center font-montserrat text-4xl text-black/80 font-black `} onClick={rgbClick}>
+              ON
             </div>
           ) : (
-            <div className={`col-span-2 row-span-2 innershadow bg-red-300 cursor-pointer text-center grid content-center font-montserrat text-4xl text-black/80 font-black`} onClick={rgbClick}>
-              uit
+            <div className={`col-span-1 row-span-2 innershadow bg-red-300 cursor-pointer text-center grid content-center font-montserrat text-4xl text-black/80 font-black`} onClick={rgbClick}>
+              OFF
             </div>
           )}
+          <div className="col-span-1 row-span-2 text-center grid content-center font-montserrat text-4xl text-black font-black  border-t-2 border-black/20">Sensor:</div>
+
           {sensorStatus ? (
             <div
-              className={`col-span-2 row-span-2 bg-green-300 cursor-pointer text-center grid content-center font-montserrat text-4xl text-black/80 font-black border-t-2 border-black/20`}
+              className={`col-span-1 row-span-2 bg-green-300 cursor-pointer text-center grid content-center font-montserrat text-4xl text-black/80 font-black border-t-2 border-black/20`}
               onClick={sensorClick}>
-              aan
+              ON
             </div>
           ) : (
             <div
-              className={`col-span-2 row-span-2 innershadow bg-red-300 cursor-pointer text-center grid content-center font-montserrat text-4xl text-black/80 font-black border-t-2 border-white/20`}
+              className={`col-span-1 row-span-2 innershadow bg-red-300 cursor-pointer text-center grid content-center font-montserrat text-4xl text-black/80 font-black border-t-2 border-white/20`}
               onClick={sensorClick}>
-              uit
+              OFF
             </div>
           )}
         </div>
-        <div className="col-span-4 row-span-3 bg-white/80  rounded-3xl text-black grid content-center drop-shadow-md grid-cols-3 grid-rows-3 cursor-pointer">
-          <div className="col-span-1 row-span-1 border rounded-tl-3xl border-black/40  grid content-center text-center font-bold text-3xl font-montserrat">7</div>
-          <div className="col-span-1 row-span-1 border border-black/40  grid content-center text-center font-bold text-3xl font-montserrat">8</div>
-          <div className="col-span-1 row-span-1 border border-black/40 rounded-tr-3xl  grid content-center text-center font-bold text-3xl font-montserrat" onClick={rgbClick}>
+        <div className={`col-span-4 row-span-3 bg-white/80  rounded-3xl text-black grid content-center drop-shadow-md grid-cols-3 grid-rows-3 cursor-pointer`}>
+          <div
+            className={`col-span-1 row-span-1 border rounded-tl-3xl border-black/40  grid content-center text-center font-bold text-3xl font-montserrat ${
+              modus == 7 ? `innershadow bg-gray-400/20` : ``
+            }`}
+            onClick={() => modusClick(7)}>
+            7
+          </div>
+          <div
+            className={`col-span-1 row-span-1 border border-black/40  grid content-center text-center font-bold text-3xl font-montserrat ${modus == 8 ? `innershadow bg-gray-400/20` : ``}`}
+            onClick={() => modusClick(8)}>
+            8
+          </div>
+          <div className={`col-span-1 row-span-1 border border-black/40 rounded-tr-3xl  grid content-center text-center font-bold text-3xl font-montserrat `} onClick={rgbClick}>
             {rgbStatus ? `aan` : `uit`}
           </div>
-          <div className="col-span-1 row-span-1 border border-black/40  grid content-center text-center font-bold text-3xl font-montserrat">4</div>
-          <div className="col-span-1 row-span-1 border border-black/40  grid content-center text-center font-bold text-3xl font-montserrat">5</div>
-          <div className="col-span-1 row-span-1 border border-black/40  grid content-center text-center font-bold text-3xl font-montserrat">6</div>
-          <div className="col-span-1 row-span-1 border border-black/40 rounded-bl-3xl  grid content-center text-center font-bold text-3xl font-montserrat">1</div>
-          <div className="col-span-1 row-span-1 border border-black/40  grid content-center text-center font-bold text-3xl font-montserrat">2</div>
-          <div className="col-span-1 row-span-1 border border-black/40 rounded-br-3xl grid content-center text-center font-bold text-3xl font-montserrat">3</div>
+          <div
+            className={`col-span-1 row-span-1 border border-black/40  grid content-center text-center font-bold text-3xl font-montserrat ${modus == 4 ? `innershadow bg-gray-400/20` : ``}`}
+            onClick={() => modusClick(4)}>
+            4
+          </div>
+          <div
+            className={`col-span-1 row-span-1 border border-black/40  grid content-center text-center font-bold text-3xl font-montserrat ${modus == 5 ? `innershadow bg-gray-400/20` : ``}`}
+            onClick={() => modusClick(5)}>
+            5
+          </div>
+          <div
+            className={`col-span-1 row-span-1 border border-black/40  grid content-center text-center font-bold text-3xl font-montserrat ${modus == 6 ? `innershadow bg-gray-400/20` : ``}`}
+            onClick={() => modusClick(6)}>
+            6
+          </div>
+          <div
+            className={`col-span-1 row-span-1 border border-black/40 rounded-bl-3xl  grid content-center text-center font-bold text-3xl font-montserrat ${
+              modus == 1 ? `innershadow bg-gray-400/20` : ``
+            }`}
+            onClick={() => modusClick(1)}>
+            1
+          </div>
+          <div
+            className={`col-span-1 row-span-1 border border-black/40  grid content-center text-center font-bold text-3xl font-montserrat ${modus == 2 ? `innershadow bg-gray-400/20` : ``}`}
+            onClick={() => modusClick(2)}>
+            2
+          </div>
+          <div
+            className={`col-span-1 row-span-1 border border-black/40 rounded-br-3xl grid content-center text-center font-bold text-3xl font-montserrat ${
+              modus == 3 ? `innershadow bg-gray-400/20` : ``
+            }`}
+            onClick={() => modusClick(3)}>
+            3
+          </div>
         </div>
       </div>
     </div>
