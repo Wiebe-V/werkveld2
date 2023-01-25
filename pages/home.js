@@ -41,7 +41,7 @@ export default function Home() {
       plateTemp: values.plateTemp,
       rgbStripStatus: rgbStatus ? 1 : 0,
       sensorStatus: sensorStatus ? 1 : 0,
-      modus: values.modus,
+      // modus: values.modus,
     }).catch(alert);
   };
 
