@@ -4,6 +4,7 @@ module.exports = {
   theme: {
     fontFamily: {
       kanit: ["Kanit", "sans-serif"],
+      montserrat: ["Montserrat", "sans-serif"],
     },
     extend: {
       gridTemplateRows: {

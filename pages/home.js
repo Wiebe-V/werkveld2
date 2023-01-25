@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getDatabase, ref, onValue } from "firebase/database";
+import { getDatabase, ref, onValue, set } from "firebase/database";
 import { useEffect, useState } from "react";
 import LegacyImage from "next/legacy/image";
 import profilePic from "../public/epichome.png";
@@ -28,6 +28,23 @@ const database = getDatabase(app);
 export default function Home() {
   const [values, setValues] = useState(`Waiting`);
 
+  let rgbStatus = false;
+  let sensorStatus = false;
+  let modus = 0;
+
+  const Push = () => {
+    set(ref(database, "values/"), {
+      debugValue: values.debugValue,
+      temp: values.temp,
+      distanceCm: values.distanceCm,
+      humidity: values.humidity,
+      plateTemp: values.plateTemp,
+      rgbStripStatus: rgbStatus ? 1 : 0,
+      sensorStatus: sensorStatus ? 1 : 0,
+      modus: values.modus,
+    }).catch(alert);
+  };
+
   useEffect(() => {
     let isTrue = false;
 
@@ -35,7 +52,7 @@ export default function Home() {
       onValue(ref(database, `values`), (snapshot) => {
         const data = snapshot.val();
         if (data != values) {
-          console.log(data);
+          // console.log(data);
           setValues(data);
         } else {
           return;
@@ -48,7 +65,45 @@ export default function Home() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // useEffect(() => {
+  //   if (values.rgbStripStatus == 1) {
+  //     setRgb(true);
+  //   } else {
+  //     setRgb(false);
+  //   }
+  //   console.log(rgb + ` rgb`);
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [values.rgbStripStatus]);
+
+  values.rgbStripStatus == 1 ? (rgbStatus = true) : (rgbStatus = false);
+  console.log(rgbStatus);
+
+  values.sensorStatus == 1 ? (sensorStatus = true) : (sensorStatus = false);
+  console.log(sensorStatus);
+
   //   console.log(values);
+
+  const rgbClick = () => {
+    if (rgbStatus === true) {
+      rgbStatus = false;
+      Push();
+    } else {
+      rgbStatus = true;
+      Push();
+    }
+    console.log(rgbStatus);
+  };
+
+  const sensorClick = () => {
+    if (sensorStatus === true) {
+      sensorStatus = false;
+      Push();
+    } else {
+      sensorStatus = true;
+      Push();
+    }
+    console.log(rgbStatus);
+  };
 
   return (
     <div className="bggrad flex flex-row h-screen w-screen overflow-hidden">
@@ -102,17 +157,70 @@ export default function Home() {
         <div className="col-span-4 font-kanit text-gray-700 mt-2 ">
           Showing:<span className="font-semibold"> Today</span>
         </div>
-        <div className="col-span-4 row-span-3 bg-white/80 rounded-3xl text-black grid content-center drop-shadow-md">
-          <p className=" text-center">{values.temp}</p>
+        <div className="col-span-4 row-span-3 bg-white/80 rounded-3xl text-black drop-shadow-md">
+          <p className=" place-self-center text-8xl font-black drop-shadow-lg font-montserrat mt-20 mx-12">
+            {values.temp}
+            <span className="text-4xl">°C</span>
+          </p>
+          <p className=" font-bold text-3xl text-black/60 font-montserrat mx-12 mt-4">Ruimte</p>
         </div>
-        <div className="col-span-4 row-span-3 bg-white/80  rounded-3xl text-black grid content-center drop-shadow-md">
-          <p className=" text-center">{values.distanceCm}</p>
+        <div className="col-span-4 row-span-3 bg-white/80  rounded-3xl text-black  drop-shadow-md">
+          <p className=" place-self-center text-8xl font-black drop-shadow-lg font-montserrat mt-20 mx-12">
+            {parseFloat(values.distanceCm).toFixed(0)}
+            <span className="text-4xl">cm</span>
+          </p>
+          <p className=" font-bold text-3xl text-black/60 font-montserrat mx-12 mt-4">Afstand</p>
         </div>
-        <div className="col-span-4 row-span-3 bg-white/80  rounded-3xl text-black grid content-center drop-shadow-md">
-          <p className=" text-center">{values.humidity}</p>
+        <div className="col-span-4 row-span-3 bg-white/80  rounded-3xl text-black drop-shadow-md">
+          <p className=" place-self-center text-8xl font-black drop-shadow-lg font-montserrat mt-20 mx-12">
+            {values.humidity}
+            <span className="text-4xl">%</span>
+          </p>
+          <p className=" font-bold text-3xl text-black/60 font-montserrat mx-12 mt-4">Vochtigheid</p>
         </div>
-        <div className="col-span-4 row-span-3 bg-white/80  rounded-3xl text-black grid content-center drop-shadow-md">
-          <p className=" text-center">{values.plateTemp}</p>
+        <div className="col-span-4 row-span-3 bg-white/80  rounded-3xl text-black  drop-shadow-md">
+          <p className=" place-self-center text-8xl font-black drop-shadow-lg font-montserrat mt-20 mx-12">
+            {parseFloat(values.plateTemp).toFixed(2)}
+            <span className="text-4xl">°C</span>
+          </p>
+          <p className=" font-bold text-3xl text-black/60 font-montserrat mx-12 mt-4">Kookplaat</p>
+        </div>
+        <div className="col-span-4 row-span-3 bg-white/80  rounded-3xl text-black grid  drop-shadow-md grid-cols-2 grid-rows-4 overflow-hidden  ">
+          {rgbStatus ? (
+            <div className={`col-span-2 row-span-2 bg-green-300 cursor-pointer text-center grid content-center font-montserrat text-4xl text-black/80 font-black `} onClick={rgbClick}>
+              aan
+            </div>
+          ) : (
+            <div className={`col-span-2 row-span-2 innershadow bg-red-300 cursor-pointer text-center grid content-center font-montserrat text-4xl text-black/80 font-black`} onClick={rgbClick}>
+              uit
+            </div>
+          )}
+          {sensorStatus ? (
+            <div
+              className={`col-span-2 row-span-2 bg-green-300 cursor-pointer text-center grid content-center font-montserrat text-4xl text-black/80 font-black border-t-2 border-black/20`}
+              onClick={sensorClick}>
+              aan
+            </div>
+          ) : (
+            <div
+              className={`col-span-2 row-span-2 innershadow bg-red-300 cursor-pointer text-center grid content-center font-montserrat text-4xl text-black/80 font-black border-t-2 border-white/20`}
+              onClick={sensorClick}>
+              uit
+            </div>
+          )}
+        </div>
+        <div className="col-span-4 row-span-3 bg-white/80  rounded-3xl text-black grid content-center drop-shadow-md grid-cols-3 grid-rows-3 cursor-pointer">
+          <div className="col-span-1 row-span-1 border rounded-tl-3xl border-black/40  grid content-center text-center font-bold text-3xl font-montserrat">7</div>
+          <div className="col-span-1 row-span-1 border border-black/40  grid content-center text-center font-bold text-3xl font-montserrat">8</div>
+          <div className="col-span-1 row-span-1 border border-black/40 rounded-tr-3xl  grid content-center text-center font-bold text-3xl font-montserrat" onClick={rgbClick}>
+            {rgbStatus ? `aan` : `uit`}
+          </div>
+          <div className="col-span-1 row-span-1 border border-black/40  grid content-center text-center font-bold text-3xl font-montserrat">4</div>
+          <div className="col-span-1 row-span-1 border border-black/40  grid content-center text-center font-bold text-3xl font-montserrat">5</div>
+          <div className="col-span-1 row-span-1 border border-black/40  grid content-center text-center font-bold text-3xl font-montserrat">6</div>
+          <div className="col-span-1 row-span-1 border border-black/40 rounded-bl-3xl  grid content-center text-center font-bold text-3xl font-montserrat">1</div>
+          <div className="col-span-1 row-span-1 border border-black/40  grid content-center text-center font-bold text-3xl font-montserrat">2</div>
+          <div className="col-span-1 row-span-1 border border-black/40 rounded-br-3xl grid content-center text-center font-bold text-3xl font-montserrat">3</div>
         </div>
       </div>
     </div>
